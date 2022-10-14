@@ -61,6 +61,18 @@ router.put("/like/:id", authMiddleWare, async (req, res) => {
   }
 });
 
+
+//adding comment to a post
+router.put("/comment/:id", authMiddleWare, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    await post.updateOne({ $push: { comment: req.body.comment, userId :req.body.userId } });
+    res.status(200).json("comment has been added");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 //get a post
 router.get("/:id", authMiddleWare, async (req, res) => {
   try {
