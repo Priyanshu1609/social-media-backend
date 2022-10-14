@@ -1,9 +1,10 @@
 const User = require("../models/User");
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const authMiddleWare = require("../middlewares/auth");
 
 //update user
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleWare, async (req, res) => {
     if (req.body.userId === req.params.id || req.body.isAdmin) {
         if (req.body.password) {
             try {
@@ -27,7 +28,7 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete user
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleWare, async (req, res) => {
     if (req.body.userId === req.params.id || req.body.isAdmin) {
         try {
             await User.findByIdAndDelete(req.params.id);
@@ -41,7 +42,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 //get a user
-router.get("/:id", async (req, res) => {
+router.get("/:id", authMiddleWare, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         const { password, updatedAt, ...other } = user._doc;
@@ -52,7 +53,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //follow a user
-router.put("/follow/:id", async (req, res) => {
+router.put("/follow/:id", authMiddleWare, async (req, res) => {
     if (req.body.userId !== req.params.id) {
         try {
             const user = await User.findById(req.params.id);
@@ -73,7 +74,7 @@ router.put("/follow/:id", async (req, res) => {
 });
 
 //unfollow a user
-router.put("/unfollow/:id", async (req, res) => {
+router.put("/unfollow/:id", authMiddleWare, async (req, res) => {
     if (req.body.userId !== req.params.id) {
         try {
             const user = await User.findById(req.params.id);
