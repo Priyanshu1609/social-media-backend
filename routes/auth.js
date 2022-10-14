@@ -68,6 +68,7 @@ router.post("/authenticate", async (req, res) => {
     try {
         //check existing user 
         const existingUser = await User.findOne({ email: req.body.email });
+        // console.log({existingUser})
         if (existingUser) {
 
             const validPassword = await bcrypt.compare(req.body.password, existingUser.password)
@@ -81,8 +82,9 @@ router.post("/authenticate", async (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" }
             );
+            console.log({existingUser, accessToken})
 
-            return res.status(200).json({ user: existingUser, accessToken });
+            return res.status(200).json({ user : existingUser, accessToken });
         }
         else {
 
