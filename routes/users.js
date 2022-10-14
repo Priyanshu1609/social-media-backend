@@ -23,12 +23,6 @@ router.put("/:id", authMiddleWare, async (req, res) => {
             return res.status(500).json(err);
         }
     } else {
-        const response = {
-            statusCode: 403,
-            headers,
-            body: JSON.stringify({ messsage: "You can update only your account!" }),
-        };
-        return response;
         return res.status(403).json("You can update only your account!");
     }
 });
