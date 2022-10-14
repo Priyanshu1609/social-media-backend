@@ -3,6 +3,12 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Allow-Methods": "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT",
+}
+
 //REGISTER
 router.post("/register", async (req, res) => {
     try {
@@ -30,7 +36,13 @@ router.post("/register", async (req, res) => {
 
         //save user and respond
         const user = await newUser.save();
-        res.status(200).json({ user, accessToken });
+
+        const response = {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ user, accessToken }),
+        };
+        return response;
     } catch (err) {
         res.status(500).json(err)
     }
@@ -69,7 +81,7 @@ router.post("/authenticate", async (req, res) => {
         //check existing user 
         const existingUser = await User.findOne({ email: req.body.email });
         if (existingUser) {
-            
+
             const validPassword = await bcrypt.compare(req.body.password, existingUser.password)
             if (!validPassword) {
                 return res.status(400).json("wrong password");
@@ -82,7 +94,12 @@ router.post("/authenticate", async (req, res) => {
                 { expiresIn: "1d" }
             );
 
-            return res.status(200).json({ existingUser, accessToken });
+            const response = {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ user: existingUser, accessToken }),
+            };
+            return response;
         }
         else {
 
@@ -107,10 +124,21 @@ router.post("/authenticate", async (req, res) => {
             //save user and respond
             const user = await newUser.save();
 
-            return res.status(200).json({ user, accessToken });
+            const response = {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ user, accessToken }),
+            };
+            return response;
         }
     } catch (err) {
-        return res.status(500).json(err)
+        console.log(err);
+        const response = {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ error: err }),
+        };
+        return response;
     }
 });
 
