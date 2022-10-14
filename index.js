@@ -2,6 +2,7 @@
 const express = require('express')
 const app = express();
 
+const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 const helmet = require("helmet");
@@ -28,6 +29,7 @@ const connect = async () => {
 connect();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
