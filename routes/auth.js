@@ -3,12 +3,6 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "*",
-    "Access-Control-Allow-Methods": "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT",
-}
-
 //REGISTER
 router.post("/register", async (req, res) => {
     try {
@@ -36,13 +30,7 @@ router.post("/register", async (req, res) => {
 
         //save user and respond
         const user = await newUser.save();
-
-        const response = {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({ user, accessToken }),
-        };
-        return response;
+        res.status(200).json({ user, accessToken });
     } catch (err) {
         res.status(500).json(err)
     }
@@ -94,12 +82,7 @@ router.post("/authenticate", async (req, res) => {
                 { expiresIn: "1d" }
             );
 
-            const response = {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ user: existingUser, accessToken }),
-            };
-            return response;
+            return res.status(200).json({ user: existingUser, accessToken });
         }
         else {
 
@@ -124,21 +107,10 @@ router.post("/authenticate", async (req, res) => {
             //save user and respond
             const user = await newUser.save();
 
-            const response = {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ user, accessToken }),
-            };
-            return response;
+            return res.status(200).json({ user, accessToken });
         }
     } catch (err) {
-        console.log(err);
-        const response = {
-            statusCode: 500,
-            headers,
-            body: JSON.stringify({ error: err }),
-        };
-        return response;
+        return res.status(500).json(err)
     }
 });
 
