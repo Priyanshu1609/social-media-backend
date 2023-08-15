@@ -15,10 +15,6 @@ const authMiddleWare = (req, res, next) => {
 
         req.userId = verified.id;
 
-        res.append('Access-Control-Allow-Origin', ['*']);
-        res.append("Access-Control-Allow-Headers", ['*']);
-        res.append('Access-Control-Allow-Methods', 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT');
-
         next();
     } catch (err) {
         res.status(401).json({ error: err.message });
